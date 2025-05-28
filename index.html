@@ -1,54 +1,22 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const searchBar = document.getElementById('searchBar');
-    const goBtn = document.getElementById('goBtn');
-    const backBtn = document.getElementById('backBtn');
-    const darkModeBtn = document.getElementById('darkModeBtn');
-
-    // Función para realizar búsquedas
-    function performSearch() {
-        const query = searchBar.value.trim();
-        
-        if(query === '') return;
-        
-        // Si es una URL (empieza con http:// o https://)
-        if(/^https?:\/\//i.test(query)) {
-            window.open(query, '_blank');
-        } 
-        // Si es un dominio (contiene . pero no espacios)
-        else if(query.includes('.') && !query.includes(' ')) {
-            window.open('https://' + query, '_blank');
-        } 
-        // Búsqueda en Google
-        else {
-            window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
-        }
-    }
-
-    // Event Listeners
-    goBtn.addEventListener('click', performSearch);
-    
-    searchBar.addEventListener('keypress', function(e) {
-        if(e.key === 'Enter') {
-            performSearch();
-        }
-    });
-
-    backBtn.addEventListener('click', function() {
-        window.history.back();
-    });
-
-    darkModeBtn.addEventListener('click', function() {
-        document.body.classList.toggle('dark-mode');
-        // Guardar preferencia en localStorage
-        if(document.body.classList.contains('dark-mode')) {
-            localStorage.setItem('darkMode', 'enabled');
-        } else {
-            localStorage.setItem('darkMode', 'disabled');
-        }
-    });
-
-    // Cargar preferencia de dark mode al iniciar
-    if(localStorage.getItem('darkMode') === 'enabled') {
-        document.body.classList.add('dark-mode');
-    }
-});
+<!DOCTYPE html>
+<html>
+<head>
+    <title>StealthBrowse</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="container">
+        <h1>StealthBrowse</h1>
+        <div class="search-box">
+            <input type="text" id="searchBar" placeholder="Search or enter URL...">
+            <button id="goBtn">Go</button>
+        </div>
+        <div class="buttons">
+            <button id="backBtn">← Back</button>
+            <button id="darkModeBtn">Dark Mode</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
