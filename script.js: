@@ -1,70 +1,38 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Elementos del DOM
-    const searchBar = document.getElementById('searchBar');
-    const goBtn = document.getElementById('goBtn');
-    const backBtn = document.getElementById('backBtn');
-    const darkModeBtn = document.getElementById('darkModeBtn');
-    
-    // Variable para controlar la ventana de búsqueda
-    let searchWindow = null;
+// Función principal de búsqueda
+function iniciarBusqueda() {
+  const input = document.getElementById('searchBar').value.trim();
+  
+  if(!input) return;
+  
+  let url;
+  
+  // Detección inteligente
+  if(/^(http:\/\/|https:\/\/)/.test(input)) {
+    url = input;
+  } 
+  else if(/^[a-zA-Z0-9-]+\.[a-zA-Z0-9-]/.test(input) && !input.includes(' ')) {
+    url = 'https://' + input;
+  }
+  else {
+    url = 'https://www.google.com/search?q=' + encodeURIComponent(input);
+  }
+  
+  window.open(url, '_blank');
+}
 
-    // Función mejorada para realizar búsquedas
-    function performSearch() {
-        let query = searchBar.value.trim();
-        
-        if(!query) return;
-        
-        // Prepara la URL según el tipo de entrada
-        let searchUrl;
-        
-        // Si es una URL completa
-        if(/^(https?:\/\/|ftp:\/\/)/i.test(query)) {
-            searchUrl = query;
-        }
-        // Si es un dominio (ejemplo.com)
-        else if(/^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/.test(query) && !query.includes(' ')) {
-            searchUrl = 'https://' + query;
-        }
-        // Búsqueda en Google
-        else {
-            searchUrl = 'https://www.google.com/search?q=' + encodeURIComponent(query);
-        }
-        
-        // Abre en la misma pestaña (alternativa: usar '_blank' para nueva pestaña)
-        if(searchWindow && !searchWindow.closed) {
-            searchWindow.location.href = searchUrl;
-            searchWindow.focus();
-        } else {
-            searchWindow = window.open(searchUrl, '_blank');
-        }
-    }
-
-    // Eventos mejorados
-    goBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        performSearch();
-    });
-    
-    searchBar.addEventListener('keypress', function(e) {
-        if(e.key === 'Enter') {
-            e.preventDefault();
-            performSearch();
-        }
-    });
-
-    // Función para retroceder (solo funciona si hay historial)
-    backBtn.addEventListener('click', function() {
-        window.history.back();
-    });
-
-    // Dark Mode mejorado
-    darkModeBtn.addEventListener('click', function() {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? 'enabled' : 'disabled');
-    });
-
-    // Cargar preferencias al iniciar
-    if(localStorage.getItem('darkMode') === 'enabled') {
-        document.body.classList.add('dark-mode');
-    }
+// Eventos
+document.getElementById('goBtn').addEventListener('click', iniciarBusqueda);
+document.getElementById('searchBar').addEventListener('keypress', function(e) {
+  if(e.key === 'Enter') iniciarBusqueda();
 });
+
+// Dark Mode
+document.getElementById('darkModeBtn').addEventListener('click', function() {
+  document.body.classList.toggle('dark-mode');
+  localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+});
+
+// Cargar preferencias
+if(localStorage.getItem('darkMode') === 'true') {
+  document.body.classList.add('dark-mode');
+}
